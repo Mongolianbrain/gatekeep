@@ -43,9 +43,9 @@ else
 fi
 
 # Create wrapper scripts in PATH
-cat > "$BIN_DIR/ask-worker" << WRAPPER
+cat > "$BIN_DIR/ask-worker" << 'WRAPPER'
 #!/usr/bin/env bash
-exec python3 "$GATEKEEP_HOME/src/gatekeep/ask_worker.py" "$@"
+exec python3 "${GATEKEEP_HOME}/src/gatekeep/ask_worker.py" "${@}"
 WRAPPER
 chmod +x "$BIN_DIR/ask-worker"
 
