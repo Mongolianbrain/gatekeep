@@ -1,0 +1,40 @@
+# Gatekeep configuration
+# Your AI coding agent reads this. Gatekeep enforces it.
+
+# Worker model settings
+worker:
+  model: deepseek-chat          # Or: gemini-2.0-flash, gpt-4o-mini, etc.
+  api_url: https://api.deepseek.com/v1/chat/completions
+  max_tokens: 4096
+  temperature: 0.1
+
+# When to delegate to the worker
+delegate:
+  read_large_files: true        # Files >300 lines → use ask-worker
+  read_multiple_files: true     # 3+ files at once → use ask-worker
+  generate_boilerplate: true    # Tests, configs, docs → use worker
+  never_delegate:               # Keep these on the primary agent
+    - architecture_decisions
+    - debugging
+    - safety_critical_code
+    - tasks_under_2000_tokens
+
+# Behavioral rules (enforced by pre-commit)
+rules:
+  max_one_bash_per_message: true
+  describe_env_before_prompt: true
+  max_files_per_commit: 20
+  max_changes_per_file: 500
+
+# Blocked operations (hard blocks, no override)
+block:
+  commands:
+    - pattern: "rm.*\\.hermes"
+      reason: "Never modify Hermes configuration"
+    - pattern: "rm.*GATEKEEP"
+      reason: "Never delete Gatekeep files"
+    - pattern: "sed.*config.*model"
+      reason: "Use GATEKEEP_WORKER_MODEL env var instead"
+  config_changes:
+    - .gatekeep.yaml
+    - gatekeep.yaml
